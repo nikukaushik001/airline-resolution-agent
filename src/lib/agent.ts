@@ -116,7 +116,8 @@ User Message: "${message}"
       temperature: 0.1,
     });
 
-    const content = extraction?.choices[0]?.message?.content || '{}';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const content = (extraction as any)?.choices?.[0]?.message?.content || '{}';
     parsedIntent = JSON.parse(content);
     logEvent(`LLM identified intent: ${parsedIntent.intent}`);
   } catch (err) {
@@ -189,7 +190,8 @@ Never start consecutive responses with the same sentence.
       temperature: 0.4,
       max_tokens: 512,
     });
-    finalResponseText = generation?.choices[0]?.message?.content?.trim() ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    finalResponseText = (generation as any)?.choices?.[0]?.message?.content?.trim() ||
       'I am having trouble connecting right now. Please resend your message.';
   } catch (err: unknown) {
     console.error('Response generation failed after retries:', err);
