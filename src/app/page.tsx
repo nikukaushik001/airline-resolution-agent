@@ -240,20 +240,21 @@ export default function Home() {
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-4">
+        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-4 flex flex-col">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-[60vh] gap-6 msg-animate">
+            <div className="flex flex-col items-center justify-center flex-1 min-h-[180px] gap-5 msg-animate py-8">
               <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 bg-indigo-500 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
-                <div className="w-20 h-20 rounded-full btn-gradient flex items-center justify-center relative shadow-[0_0_40px_rgba(99,102,241,0.5)] border border-indigo-300/30">
-                  <Zap size={32} className="text-white drop-shadow-md" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full btn-gradient flex items-center justify-center relative shadow-[0_0_40px_rgba(99,102,241,0.5)] border border-indigo-300/30">
+                  <Zap size={26} className="text-white drop-shadow-md sm:hidden" />
+                  <Zap size={32} className="text-white drop-shadow-md hidden sm:block" />
                 </div>
               </div>
-              <div className="text-center space-y-2 relative z-10">
-                <h3 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-300">
+              <div className="text-center space-y-1.5 relative z-10">
+                <h3 className="text-base sm:text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-300">
                   Ready to resolve
                 </h3>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>
                   Select a scenario and click a demo script<br />or type a message to begin.
                 </p>
               </div>
