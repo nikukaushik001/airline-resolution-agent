@@ -94,11 +94,11 @@ User Message: "${message}"
         const isLast = i === retries - 1;
         if (isLast) throw err;
 
-        // 429 rate limit: use longer backoff (2s, 4s, 8s)
-        // Other errors: standard backoff (1s, 2s, 4s)
+        // 429 rate limit: use shorter backoff (1s, 2s) to avoid Vercel 10s timeout
+        // Other errors: standard backoff (500ms, 1s)
         const isRateLimit = typeof err === 'object' && err !== null &&
           ('status' in err ? (err as { status: number }).status === 429 : false);
-        const baseMs = isRateLimit ? 2000 : 1000;
+        const baseMs = isRateLimit ? 1000 : 500;
         const waitMs = baseMs * Math.pow(2, i);
 
         console.warn(`Groq API attempt ${i + 1} failed${isRateLimit ? ' (rate limited)' : ''}. Retrying in ${waitMs}ms...`);
@@ -161,6 +161,7 @@ Today's date: Wed 23 Sep 2026.
 === RULES ENGINE DECISION (follow this exactly — you have NO authority to override it) ===
 Outcome: ${rulesOutcome.allowed ? 'APPROVED' : 'DENIED'}
 Directive: "${rulesOutcome.message}"
+Exact Reason: "${rulesOutcome.reason}"
 Escalate to Human Agent: ${rulesOutcome.escalate ? 'YES' : 'NO'}
 
 === TONE RULES (read carefully) ===
@@ -171,8 +172,9 @@ Never start consecutive responses with the same sentence.
 === RESPONSE RULES ===
 - Ground ALL facts (flight status, times, routes) in the booking data above. NEVER invent or assume.
 - Follow the Rules Engine Decision exactly. Cannot approve what was denied, cannot deny what was approved.
+- You may ONLY state the Exact Reason provided in the decision object above. Do NOT invent, infer, add, or estimate any additional policy detail, numeric threshold, time window, or justification.
 - If Escalate = YES: clearly state you are routing to a human specialist right now.
-- If DENIED: be warm but firm, explain why (cite policy), offer what IS available.
+- If DENIED: be warm but firm, explain why using ONLY the Exact Reason provided, and offer what IS available.
 - Be specific: cite flight numbers, delay hours, exact entitlements. No vague filler.
 - IMPORTANT: Keep your response to 3 sentences maximum. Never leave a sentence unfinished.
 `;

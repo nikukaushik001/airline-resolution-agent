@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
 import { handleCustomerMessage } from '@/lib/agent';
 
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json(
+      { error: 'GROQ_API_KEY environment variable is not set in production.' },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { pnr, message, history = [] } = body;

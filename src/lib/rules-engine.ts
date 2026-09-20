@@ -13,6 +13,7 @@ export type ActionIntent =
 export type ResolutionOutcome = {
   allowed: boolean;
   message: string;
+  reason: string;
   actionTaken?: string;
   escalate?: boolean;
   escalationReason?: string;
@@ -41,6 +42,7 @@ export function evaluateRequest(
     return {
       allowed: false,
       message: 'Booking not found.',
+      reason: 'No booking exists for this PNR in the database.',
       auditLog: 'Failed to find booking for PNR.',
     };
   }
@@ -53,6 +55,7 @@ export function evaluateRequest(
       allowed: false,
       message:
         'I understand your frustration and take this very seriously. I am escalating this to our specialist support team right now, and they will reach out to you directly.',
+      reason: 'Customer has threatened legal action or formal complaint, which requires immediate human escalation.',
       escalate: true,
       escalationReason: 'Customer threatened legal action or formal complaint.',
       auditLog: 'Escalated: Threat of legal action or formal complaint.',
@@ -65,6 +68,7 @@ export function evaluateRequest(
       allowed: false,
       message:
         'I am unable to make exceptions for disruptions not caused by the airline (e.g. a missed flight). I will escalate this to a specialist who can review your case.',
+      reason: 'Policy does not allow automated compensation or exceptions for disruptions not caused by the airline.',
       escalate: true,
       escalationReason: 'Exception requested for non-airline-caused disruption.',
       auditLog: 'Escalated: Exception requested for non-airline-caused disruption.',
@@ -77,6 +81,7 @@ export function evaluateRequest(
       allowed: false,
       message:
         'I am unable to provide compensation beyond our stated policy. I will escalate your request to a specialist who can review what additional options may be available.',
+      reason: 'Customer requested compensation that explicitly exceeds automated policy limits.',
       escalate: true,
       escalationReason: 'Customer requested compensation beyond stated policy amounts.',
       auditLog: 'Escalated: Request for compensation beyond stated policy.',
@@ -102,6 +107,7 @@ export function evaluateRequest(
       return {
         allowed: false,
         message: `I cannot offer compensation or changes on the ${options.targetFlight} leg — it is not disrupted. Only your ${disruptedBooking.flight} (${disruptedBooking.route}) is affected. I am escalating your compensation request to a specialist.`,
+        reason: `Compensation requested for unaffected flight leg (${options.targetFlight}). Automated systems can only compensate the disrupted leg.`,
         escalate: true,
         escalationReason: `Requested ${intent} for unaffected flight leg (${options.targetFlight}).`,
         auditLog: `Escalated: Requested ${intent} for unaffected flight leg (${options.targetFlight}).`,
@@ -114,6 +120,7 @@ export function evaluateRequest(
     return {
       allowed: false,
       message: 'There are no active disruptions on your booking that would qualify for this.',
+      reason: 'No active disruptions on the booking.',
       auditLog: 'Request denied: No active disruptions found.',
     };
   }
@@ -129,6 +136,7 @@ export function evaluateRequest(
       return {
         allowed: true,
         message: msg,
+        reason: 'Free rebooking on the next available flight is standard policy for airline-caused cancellations.',
         actionTaken: `Rebooking authorised on next available flight within 24h. Priority: ${customer.loyaltyTier}.`,
         auditLog: `Rebooking authorised for cancelled flight ${disruptedBooking.flight}. Tier: ${customer.loyaltyTier}.`,
       };
@@ -140,6 +148,7 @@ export function evaluateRequest(
           allowed: false,
           message:
             'Refunds can only be processed to the original payment method — our policy does not permit routing to a different account. I am escalating this to a specialist who can assist further.',
+          reason: 'Refunds must strictly go to the original payment method. Any deviation requires manual review.',
           escalate: true,
           escalationReason: 'Requested refund to a different payment method.',
           auditLog: 'Escalated: Refund to different payment method requested.',
@@ -148,6 +157,7 @@ export function evaluateRequest(
       return {
         allowed: true,
         message: `I have initiated a full refund for flight ${disruptedBooking.flight} (${disruptedBooking.route}). It will be credited to your original payment method within 7 business days.`,
+        reason: 'Full refunds are standard policy for airline-caused cancellations.',
         actionTaken: 'Full refund initiated to original payment method.',
         auditLog: `Refund authorised for cancelled flight ${disruptedBooking.flight}. Processing time: 7 business days.`,
       };
@@ -169,6 +179,7 @@ export function evaluateRequest(
           allowed: false,
           message:
             'I completely understand your frustration, and I am sorry for the inconvenience caused by the cancellation. However, a free class upgrade is not covered under our policy for airline-caused cancellations — your entitlements are a full refund or a free rebooking on the next available flight. I am escalating your upgrade request to a specialist.',
+          reason: 'Free class upgrades are not automated compensation for cancellations. Must escalate.',
           escalate: true,
           escalationReason: 'Free upgrade requested as compensation for cancellation — beyond policy.',
           auditLog: 'Escalated: Free upgrade as compensation for cancellation is beyond policy.',
@@ -179,6 +190,7 @@ export function evaluateRequest(
         return {
           allowed: false,
           message: `The fare difference for this change is ₹${fareDiff}, which exceeds the ₹1,500 auto-approval limit. I am escalating this to a supervisor for approval — a specialist will follow up with you shortly.`,
+          reason: `fare_difference: ₹${fareDiff} exceeds ₹1,500 auto-approval limit, requires supervisor approval.`,
           escalate: true,
           escalationReason: `Fare difference waiver ₹${fareDiff} exceeds ₹1,500 limit.`,
           auditLog: `Escalated: Fare difference ₹${fareDiff} exceeds ₹1,500 auto-approval limit.`,
@@ -188,6 +200,7 @@ export function evaluateRequest(
       return {
         allowed: true,
         message: `I can process this change. The ₹${fareDiff} fare difference is within the auto-approval limit — I have updated your booking.`,
+        reason: `fare_difference: ₹${fareDiff} is within the ₹1,500 auto-approval limit.`,
         actionTaken: `Flight change processed. Fare difference ₹${fareDiff} charged.`,
         auditLog: `Flight change approved. Fare difference ₹${fareDiff} within limit.`,
       };
@@ -204,6 +217,7 @@ export function evaluateRequest(
       return {
         allowed: true,
         message: `I have issued a ₹500 meal voucher for your ${delay}-hour delay on flight ${disruptedBooking.flight}. You can use it at any airport restaurant.`,
+        reason: 'Meal vouchers are automatically provided for any delay.',
         actionTaken: 'Meal voucher ₹500 issued.',
         auditLog: `Meal voucher ₹500 issued for ${delay}h delay on ${disruptedBooking.flight}.`,
       };
@@ -214,6 +228,7 @@ export function evaluateRequest(
         return {
           allowed: true,
           message: `I have arranged lounge access for you due to the ${delay}-hour delay on flight ${disruptedBooking.flight}.`,
+          reason: `Lounge access is approved because delay (${delay}h) is > 3 hours.`,
           actionTaken: 'Lounge access issued.',
           auditLog: `Lounge access issued for ${delay}h delay on ${disruptedBooking.flight}.`,
         };
@@ -221,6 +236,7 @@ export function evaluateRequest(
         return {
           allowed: false,
           message: `Lounge access is provided for delays over 3 hours. Your delay is ${delay} hours — you are entitled to a ₹500 meal voucher, which I can arrange now.`,
+          reason: `Lounge access is denied because delay (${delay}h) is <= 3 hours.`,
           auditLog: `Lounge access denied: ${delay}h delay is below the 3h threshold.`,
         };
       }
@@ -232,12 +248,14 @@ export function evaluateRequest(
           return {
             allowed: false,
             message: `Our policy covers hotel accommodation strictly for the duration of the delayed hours only — not a full night's stay. For your ${delay}-hour delay on ${disruptedBooking.flight}, I can arrange accommodation covering those specific hours. Would you like me to proceed on that basis?`,
+            reason: 'Hotel is approved only for the duration of the delay, not a full night stay.',
             auditLog: `Full night hotel denied for ${delay}h delay. Policy: delayed hours only.`,
           };
         }
         return {
           allowed: true,
           message: `I have arranged hotel accommodation covering the ${delay}-hour delay period for flight ${disruptedBooking.flight}. Please note this covers the delayed hours only, not a full night's stay.`,
+          reason: `Hotel accommodation is approved for the duration of the delay (${delay}h) because delay is > 5 hours.`,
           actionTaken: `Hotel accommodation arranged (${delay} delayed hours only).`,
           auditLog: `Hotel (delayed hours only) issued for ${delay}h delay on ${disruptedBooking.flight}.`,
         };
@@ -245,6 +263,7 @@ export function evaluateRequest(
         return {
           allowed: false,
           message: `Hotel accommodation is only provided for delays over 5 hours. Your current delay on ${disruptedBooking.flight} is ${delay} hours. You are entitled to a ₹500 meal voucher and lounge access, which I can arrange now.`,
+          reason: `Hotel accommodation is denied because delay (${delay}h) is <= 5 hours.`,
           auditLog: `Hotel denied: ${delay}h delay is below the 5h threshold.`,
         };
       }
@@ -265,6 +284,7 @@ export function evaluateRequest(
           allowed: false,
           message:
             'A free class upgrade is not covered under our delay compensation policy. Your entitlements for this delay are: meal voucher + lounge access (and hotel for the delayed hours, since delay > 5h). I am escalating your upgrade request to a specialist.',
+          reason: 'Free class upgrades are not automated compensation for delays. Must escalate.',
           escalate: true,
           escalationReason: 'Free upgrade requested as compensation for delay — beyond policy.',
           auditLog: 'Escalated: Free upgrade as compensation for delay is beyond policy.',
@@ -275,6 +295,7 @@ export function evaluateRequest(
         return {
           allowed: false,
           message: `The fare difference for this flight change is ₹${fareDiff}, which exceeds the ₹1,500 auto-approval limit. This requires supervisor approval — I am escalating it now. Note: your loyalty tier (${customer.loyaltyTier}) grants priority rebooking access, but does not change the fare-waiver threshold.`,
+          reason: `fare_difference: ₹${fareDiff} exceeds ₹1,500 auto-approval limit, requires supervisor approval. Tier (${customer.loyaltyTier}) does not bypass this.`,
           escalate: true,
           escalationReason: `Fare difference waiver ₹${fareDiff} exceeds ₹1,500 limit. Tier: ${customer.loyaltyTier}.`,
           auditLog: `Escalated: Fare difference ₹${fareDiff} exceeds limit. Tier ${customer.loyaltyTier} does not override waiver authority.`,
@@ -284,6 +305,7 @@ export function evaluateRequest(
       return {
         allowed: true,
         message: `I can process this flight change. The ₹${fareDiff} fare difference is within the auto-approval limit.`,
+        reason: `fare_difference: ₹${fareDiff} is within the ₹1,500 auto-approval limit.`,
         actionTaken: `Flight change processed. Fare difference ₹${fareDiff} charged.`,
         auditLog: `Flight change approved. Fare difference ₹${fareDiff} within limit.`,
       };
@@ -294,6 +316,7 @@ export function evaluateRequest(
   return {
     allowed: false,
     message: 'I am unable to process that specific request under our current policies. Please let me know if there is anything else I can help you with.',
+    reason: 'The request did not match any known automated policy, so it is denied by default.',
     auditLog: 'Request did not match any policy rule — default deny.',
   };
 }
