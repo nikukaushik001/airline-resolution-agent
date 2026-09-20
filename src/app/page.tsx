@@ -122,7 +122,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
 
       {/* ═══════════════ LEFT PANEL ═══════════════ */}
       <div className="flex flex-col flex-1 min-w-0">
@@ -318,8 +318,8 @@ export default function Home() {
       </div>
 
       {/* ═══════════════ RIGHT AUDIT PANEL ═══════════════ */}
-      <div className="w-[360px] shrink-0 flex flex-col"
-        style={{ background: 'rgba(255,255,255,0.01)', borderLeft: '1px solid var(--border)' }}>
+      <div className="w-full lg:w-[360px] h-[40vh] lg:h-auto shrink-0 flex flex-col border-t lg:border-t-0 lg:border-l"
+        style={{ background: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)' }}>
 
         {/* Panel Header */}
         <div className="shrink-0 px-5 py-4 flex items-center justify-between"
