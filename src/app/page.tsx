@@ -38,6 +38,7 @@ export default function Home() {
   const [loadingStage, setLoadingStage] = useState<'thinking' | 'analyzing' | 'responding' | null>(null);
   const [cooldown, setCooldown] = useState(false);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [showMobileAudit, setShowMobileAudit] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const auditEndRef = useRef<HTMLDivElement>(null);
   const messageCount = messages.length;
@@ -125,7 +126,7 @@ export default function Home() {
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
 
       {/* ═══════════════ LEFT PANEL ═══════════════ */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className={`flex flex-col flex-1 min-w-0 ${showMobileAudit ? 'hidden lg:flex' : 'flex'}`}>
 
         {/* Top Bar */}
         <div className="shrink-0 px-6 py-4 flex items-center justify-between"
@@ -160,6 +161,13 @@ export default function Home() {
             </select>
             <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-secondary)' }} />
           </div>
+          <button
+            onClick={() => setShowMobileAudit(true)}
+            className="lg:hidden ml-2 px-3 py-1.5 rounded-lg text-xs font-bold glass transition"
+            style={{ color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+          >
+            Audit Log
+          </button>
         </div>
 
         {/* Booking Info Card */}
@@ -318,13 +326,20 @@ export default function Home() {
       </div>
 
       {/* ═══════════════ RIGHT AUDIT PANEL ═══════════════ */}
-      <div className="w-full lg:w-[360px] h-[40vh] lg:h-auto shrink-0 flex flex-col border-t lg:border-t-0 lg:border-l"
+      <div className={`w-full lg:w-[360px] h-full lg:h-auto shrink-0 flex-col border-t lg:border-t-0 lg:border-l ${showMobileAudit ? 'flex' : 'hidden lg:flex'}`}
         style={{ background: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)' }}>
 
         {/* Panel Header */}
         <div className="shrink-0 px-5 py-4 flex items-center justify-between"
           style={{ borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
-          <div>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowMobileAudit(false)}
+              className="lg:hidden p-1.5 rounded-md glass text-white"
+            >
+              ←
+            </button>
+            <div>
             <h2 className="text-xs font-bold uppercase tracking-widest flex items-center gap-2"
               style={{ color: 'var(--text-secondary)' }}>
               <AlertCircle size={13} />
