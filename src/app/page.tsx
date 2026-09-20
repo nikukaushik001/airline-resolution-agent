@@ -238,13 +238,21 @@ export default function Home() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-5 py-3 space-y-4">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 opacity-40">
-              <div className="w-16 h-16 rounded-2xl btn-gradient flex items-center justify-center">
-                <Zap size={28} className="text-white" />
+            <div className="flex flex-col items-center justify-center h-[60vh] gap-6 msg-animate">
+              <div className="relative flex items-center justify-center">
+                <div className="absolute inset-0 bg-indigo-500 rounded-full blur-[40px] opacity-20 animate-pulse"></div>
+                <div className="w-20 h-20 rounded-full btn-gradient flex items-center justify-center relative shadow-[0_0_40px_rgba(99,102,241,0.5)] border border-indigo-300/30">
+                  <Zap size={32} className="text-white drop-shadow-md" />
+                </div>
               </div>
-              <p className="text-sm text-center" style={{ color: 'var(--text-secondary)' }}>
-                Select a scenario and click a demo script<br />or type a message to begin.
-              </p>
+              <div className="text-center space-y-2 relative z-10">
+                <h3 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-300">
+                  Ready to resolve
+                </h3>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  Select a scenario and click a demo script<br />or type a message to begin.
+                </p>
+              </div>
             </div>
           )}
 
@@ -326,8 +334,8 @@ export default function Home() {
       </div>
 
       {/* ═══════════════ RIGHT AUDIT PANEL ═══════════════ */}
-      <div className={`w-full lg:w-[360px] h-full lg:h-auto shrink-0 flex-col border-t lg:border-t-0 lg:border-l ${showMobileAudit ? 'flex' : 'hidden lg:flex'}`}
-        style={{ background: 'rgba(255,255,255,0.01)', borderColor: 'var(--border)' }}>
+      <div className={`fixed inset-0 z-50 lg:static lg:z-auto w-full lg:w-[360px] h-full lg:h-auto shrink-0 flex-col lg:border-l ${showMobileAudit ? 'flex' : 'hidden lg:flex'}`}
+        style={{ background: 'var(--bg-primary)', borderColor: 'var(--border)' }}>
 
         {/* Panel Header */}
         <div className="shrink-0 px-5 py-4 flex items-center justify-between"
