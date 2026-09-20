@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nikukaushik001/airline-resolution-agent/main/public/logo.jpg" width="120" alt="AIONOS Logo" />
+</p>
+
 # Airline Disruption Resolution Agent
 
 A full‑stack AI agent that handles airline disruption customer support **with a premium, glassmorphic UI** and **strict policy‑driven reasoning**. The agent:
