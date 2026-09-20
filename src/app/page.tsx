@@ -129,45 +129,49 @@ export default function Home() {
       <div className={`flex flex-col flex-1 min-w-0 ${showMobileAudit ? 'hidden lg:flex' : 'flex'}`}>
 
         {/* Top Bar */}
-        <div className="shrink-0 px-6 py-4 flex items-center justify-between"
+        <div className="shrink-0 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4"
           style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border)' }}>
           
           <div className="flex items-center gap-3">
             {/* Logo */}
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center btn-gradient">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center btn-gradient shrink-0">
               <Plane size={18} className="text-white" />
             </div>
-            <div>
-              <h1 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
+            <div className="min-w-0">
+              <h1 className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>
                 AIONOS Support Agent
               </h1>
-              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
                 Policy-enforced · Audit-logged · AI-powered
               </p>
             </div>
           </div>
 
-          {/* Scenario Switcher */}
-          <div className="relative">
-            <select
-              value={pnr}
-              onChange={e => handlePnrChange(e.target.value)}
-              className="appearance-none pr-8 pl-4 py-2 rounded-xl text-xs font-medium cursor-pointer glass glass-hover transition"
+          {/* Controls */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Scenario Switcher */}
+            <div className="relative flex-1 sm:flex-none">
+              <select
+                value={pnr}
+                onChange={e => handlePnrChange(e.target.value)}
+                className="appearance-none w-full pr-8 pl-4 py-2 rounded-xl text-xs font-medium cursor-pointer glass glass-hover transition truncate"
+                style={{ color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+              >
+                <option value="SK4821X" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 1 — Priya Nair · Cancelled</option>
+                <option value="TR1190B" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 2 — Arvind Kulkarni · 4h Delay</option>
+                <option value="WL7742" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 3 — Meher Kaur · 6h Delay</option>
+              </select>
+              <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-secondary)' }} />
+            </div>
+            
+            <button
+              onClick={() => setShowMobileAudit(true)}
+              className="lg:hidden shrink-0 px-3 py-2 rounded-xl text-xs font-bold glass transition"
               style={{ color: 'var(--text-primary)', borderColor: 'var(--border)' }}
             >
-              <option value="SK4821X" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 1 — Priya Nair · Flight Cancelled</option>
-              <option value="TR1190B" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 2 — Arvind Kulkarni · 4h Delay</option>
-              <option value="WL7742" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>Scenario 3 — Meher Kaur · 6h Delay</option>
-            </select>
-            <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-secondary)' }} />
+              Audit Log
+            </button>
           </div>
-          <button
-            onClick={() => setShowMobileAudit(true)}
-            className="lg:hidden ml-2 px-3 py-1.5 rounded-lg text-xs font-bold glass transition"
-            style={{ color: 'var(--text-primary)', borderColor: 'var(--border)' }}
-          >
-            Audit Log
-          </button>
         </div>
 
         {/* Booking Info Card */}
