@@ -357,6 +357,7 @@ export default function Home() {
               Deterministic rule decisions · Real-time
             </p>
           </div>
+          </div>
           {auditLogs.some(l => l.isEscalation) && (
             <span className="text-[10px] font-bold px-2.5 py-1 rounded-full text-red-300 escalation-pulse"
               style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)' }}>
