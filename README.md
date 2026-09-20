@@ -1,46 +1,75 @@
 # Airline Disruption Resolution Agent
 
-A full-stack AI agent handling airline disruption customer support strictly adhering to defined policies. 
+A full‑stack AI agent that handles airline disruption customer support **with a premium, glassmorphic UI** and **strict policy‑driven reasoning**. The agent:
+
+- Uses a deterministic TypeScript **rules engine** to decide whether a request is approved, denied, or must be escalated.
+- Grounds the LLM response in the engine's decision **but re‑phrases the internal reason** into natural, first‑person language (no verbatim policy strings, no third‑person references).
+- Provides a **glowing empty‑state hero**, a **mobile‑first overlay audit log**, and a **responsive header** that never collapses on narrow screens.
+- Is deployed at **https://airline-resolution-agent-vxpt.vercel.app/**.
+
+---
 
 ## Tech Stack
-- Frontend: Next.js (App Router), React, Tailwind CSS, Lucide React
-- Backend: Next.js API Routes (Node.js)
-- LLM: Groq API (Llama 3.3 70B Versatile) for intent extraction and natural language generation
-- Rules Engine: Deterministic TypeScript functions strictly enforcing policies (rebooking, refunds, compensation, escalation)
+- **Frontend**: Next.js (App Router), React, Tailwind CSS, Lucide React
+- **Backend**: Next.js API Routes (Node.js)
+- **LLM**: Groq API (Llama 3.3 70B Versatile) for intent extraction \u0026 response generation
+- **Rules Engine**: Deterministic TypeScript functions enforcing airline policies
 
-## Setup and Local Run Instructions
+---
 
-1.  Clone this repository or navigate to the directory.
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Set up your environment variables. Create a `.env.local` file in the root directory and add your Groq API key:
-    ```
-    GROQ_API_KEY=your_actual_groq_api_key_here
-    ```
-4.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Setup \u0026 Local Run
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env.local` file and add your Groq API key:
+   ```
+   GROQ_API_KEY=your_actual_groq_api_key_here
+   ```
+4. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+5. Open <http://localhost:3000>.
+
+---
 
 ## Testing the Agent (The 3 Scenarios)
-The UI provides a dropdown at the top to select the mock scenario.
+The UI includes a dropdown to select a mock scenario:
 
-1.  **Scenario 1: Priya Nair** (Cancellation) - Try asking for a refund and rebook. Then try demanding an upgrade "for the trouble" and watch the deterministic engine deny and escalate it, with the LLM communicating this politely.
-2.  **Scenario 2: Arvind Kulkarni** (4h Delay) - Try asking for hotel accommodation. Watch the rules engine deny it (threshold > 5h) and offer the meal voucher + lounge access instead.
-3.  **Scenario 3: Meher Kaur** (6h Delay) - Ask for a full night's stay (denied/escalated, offers delayed hours only). Ask to upgrade to a flight with a ₹2,000 difference (escalated, exceeds ₹1,500 limit).
+1. **Scenario 1 – Priya Nair (Cancellation)**
+   - Ask for a refund or re‑book.
+   - Demand an upgrade “for the trouble” → the engine denies \u0026 escalates, the LLM politely explains the decision.
+2. **Scenario 2 – Arvind Kulkarni (4‑hour Delay)**
+   - Request a hotel stay → denied (threshold \u003e 5 h) and offered a meal voucher + lounge access.
+3. **Scenario 3 – Meher Kaur (6‑hour Delay)**
+   - Request a full‑night hotel → escalated, offers delayed‑hours‑only stay.
+   - Request an upgrade with a ₹2,000 fare difference → escalated (exceeds ₹1,500 limit).
+
+---
 
 ## Testing the Rules Engine
-The rules engine is thoroughly unit-tested. To run tests:
+Run the comprehensive test suite:
 ```bash
 npm run test
 ```
 
+---
+
 ## Deployment
-This Next.js app is designed to be easily deployed to Vercel. 
-1. Push to a GitHub repository.
-2. Import project into Vercel.
-3. Add `GROQ_API_KEY` to Environment Variables in Vercel.
-4. Deploy!
+Deploy to Vercel in a few clicks:
+1. Push to GitHub.
+2. Import the repo in Vercel.
+3. Add `GROQ_API_KEY` to Vercel environment variables.
+4. Deploy! The live app is accessible at **https://airline-resolution-agent-vxpt.vercel.app/**.
+
+---
+
+## Notable Enhancements
+- **Glowing “Ready to resolve” empty state** with gradient text and animated orb.
+- **Mobile‑first audit‑log drawer** that overlays the screen on small devices.
+- **Header layout** now stacks gracefully on very narrow screens.
+- **LLM prompt update**: the internal `reason` is used only as grounding; the model must re‑phrase it in conversational, first‑person language, eliminating third‑person policy text.
+
+Enjoy a polished, premium experience while staying 100 % policy‑compliant!
